@@ -10,10 +10,8 @@
 name: Publish Docker image
 
 on:
-  pull_request:
-  push:
-    branches:
-      - master
+  release:
+    types: [created]
 
 jobs:
   push_to_registry:
@@ -50,7 +48,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.TOKEN }}
 
       - name: Build and push Docker image (versioned)
         if: github.event_name == 'push'
@@ -59,7 +57,7 @@ jobs:
           context: .
           push: true
           platforms: ${{ matrix.config.platforms }}
-          tags: "ghcr.io/ggerganov/llama.cpp:${{ matrix.config.tag }}-${{ env.COMMIT_SHA }}"
+          tags: "ghcr.io/github.repository_owner/llama.cpp:${{ matrix.config.tag }}-${{ env.COMMIT_SHA }}"
           file: ${{ matrix.config.dockerfile }}
 
       - name: Build and push Docker image (tagged)
@@ -68,5 +66,5 @@ jobs:
           context: .
           push: ${{ github.event_name == 'push' }}
           platforms: ${{ matrix.config.platforms }}
-          tags: "ghcr.io/ggerganov/llama.cpp:${{ matrix.config.tag }}"
+          tags: "ghcr.io/github.repository_owner/llama.cpp:${{ matrix.config.tag }}"
           file: ${{ matrix.config.dockerfile }}
