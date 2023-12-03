@@ -48,23 +48,13 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.TOKEN }}
-
-      - name: Build and push Docker image (versioned)
-        if: github.event_name == 'push'
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          platforms: ${{ matrix.config.platforms }}
-          tags: "ghcr.io/github.repository_owner/llama.cpp:${{ matrix.config.tag }}-${{ env.COMMIT_SHA }}"
-          file: ${{ matrix.config.dockerfile }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image (tagged)
         uses: docker/build-push-action@v4
         with:
           context: .
-          push: ${{ github.event_name == 'push' }}
+          push: true
           platforms: ${{ matrix.config.platforms }}
-          tags: "ghcr.io/github.repository_owner/llama.cpp:${{ matrix.config.tag }}"
+          tags: "ghcr.io/${{ github.repository_owner }}/llama.cpp:${{ github.ref_name }}-${{ matrix.config.tag }}"
           file: ${{ matrix.config.dockerfile }}
