@@ -1,10 +1,10 @@
-name: Build and Publish server ackage
+name: Build and Publish server package
 
 on:
   release:
     types: [created]
 jobs:
-  ubuntu-latest-cmake:
+  server-package:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,10 +25,9 @@ jobs:
           cd build
           cmake ..
           cmake --build examples/server --config Release
-          ls -l bin
 
       - name: Publish
         uses: actions/upload-artifact@v2
         with:
             name: server-${{ github.ref_name }}
-            path: bin/server
+            path: build/bin/server
