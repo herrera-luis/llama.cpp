@@ -102,3 +102,12 @@ poetry.toml
 /tests/test-tokenizer-1-bpe
 /tests/test-rope
 /tests/test-backend-ops
+
+.terraform
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+*.tfvars
+.terraform.lock.hcl
