@@ -1,7 +1,7 @@
 module "chat_service" {
 
-  source = "git::https://github.com/herrera-luis/tf-modules.git//ecs-service?ref=v0.0.1"
-  #source = "../../tf-modules/ecs-service"
+  #source = "git::https://github.com/herrera-luis/tf-modules.git//ecs-service?ref=v0.0.1"
+  source = "../../tf-modules/ecs-service"
 
   name                = "llm-chat"
   vpc_id              = data.terraform_remote_state.vpc.outputs.us_west_2.vpc_id
@@ -28,13 +28,18 @@ module "chat_service" {
     }
     command = ["--server", "-m", "models/llama-2-7b-chat.Q5_0.gguf", "-c", "4096", "--threads", "6", "--port", "9000", "--host", "0.0.0.0"]
   }
-  tag_version = var.tag_version
+
+  image = {
+    name = "ghcr.io/herrera-luis/llama.cpp"
+    tag  = "${var.tag_version}-full"
+  }
+
 }
 
 
 module "image_service" {
-  source = "git::https://github.com/herrera-luis/tf-modules.git//ecs-service?ref=v0.0.1"
-  #source = "../../tf-modules/ecs-service"
+  #source = "git::https://github.com/herrera-luis/tf-modules.git//ecs-service?ref=v0.0.1"
+  source = "../../tf-modules/ecs-service"
 
   name                = "llm-image"
   vpc_id              = data.terraform_remote_state.vpc.outputs.us_west_2.vpc_id
@@ -64,6 +69,10 @@ module "image_service" {
     command = ["--server", "-m", "models/ggml-model-f16.gguf", "--mmproj", "models/mmproj-model-f16.gguf", "--threads", "6", "--port", "8080", "-ngl", "1", "--host", "0.0.0.0"]
 
   }
-  tag_version = var.tag_version
+
+  image = {
+    name = "ghcr.io/herrera-luis/llama.cpp"
+    tag  = "${var.tag_version}-full"
+  }
 
 }
