@@ -1,7 +1,7 @@
 # Define the default target now so that it is always the first target
 BUILD_TARGETS = \
 	main quantize quantize-stats perplexity embedding vdot q8dot train-text-from-scratch convert-llama2c-to-ggml \
-	simple batched batched-bench save-load-state server gguf llama-bench libllava.a llava-cli baby-llama beam-search  \
+	simple batched batched-bench save-load-state server gguf llama-bench libllava.a llava-cli llava-video-cli baby-llama beam-search  \
 	speculative infill tokenize benchmark-matmult parallel finetune export-lora lookahead tests/test-c.o
 
 # Binaries only useful for tests
@@ -623,6 +623,9 @@ libllava.a: examples/llava/llava.cpp examples/llava/llava.h examples/llava/clip.
 
 llava-cli: examples/llava/llava-cli.cpp examples/llava/clip.h examples/llava/clip.cpp examples/llava/llava.h examples/llava/llava.cpp ggml.o llama.o $(COMMON_DEPS) $(OBJS)
 	$(CXX) $(CXXFLAGS) $(filter-out %.h,$^) -o $@ $(LDFLAGS) -Wno-cast-qual
+
+llava-video-cli: examples/llava-video/llava-video-cli.cpp examples/llava-video/clip.h examples/llava-video/clip.cpp examples/llava-video/llava.h examples/llava-video/llava.cpp examples/llava-video/language-bind-video-tower.h examples/llava-video/language-bind-video-tower.cpp examples/llava-video/video-embedding.h examples/llava-video/video-embedding.cpp ggml.o llama.o $(COMMON_DEPS) $(OBJS)
+	$(CXX) $(CXXFLAGS) `pkg-config --cflags --libs opencv4` $(filter-out %.h,$^) -o $@ $(LDFLAGS) -Wno-cast-qual
 
 baby-llama: examples/baby-llama/baby-llama.cpp ggml.o llama.o $(COMMON_DEPS) train.o $(OBJS)
 	$(CXX) $(CXXFLAGS) $(filter-out %.h,$^) -o $@ $(LDFLAGS)
